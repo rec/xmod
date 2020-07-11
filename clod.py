@@ -26,7 +26,7 @@ MODULE_VARIABLES = {
     '__spec__',
 }
 
-NO_COPY = {
+OMIT = {
     '__class__',
     '__getattr__',
     '__getattribute__',
@@ -37,7 +37,12 @@ NO_COPY = {
 }
 
 
-def clod(rep, name, variables=MODULE_VARIABLES, no_copy=NO_COPY):
+def clod(replacement, module_name, variables=None, omit=None):
+    """
+    Replace the system module at ``module_name`` with a replacement, which
+    can be any object.
+    """
+
     def method(f):
         @functools.wraps(f)
         def wrapped(self, *args, **kwargs):
@@ -45,18 +50,23 @@ def clod(rep, name, variables=MODULE_VARIABLES, no_copy=NO_COPY):
 
         return wrapped
 
-    original = sys.modules[name]
+    if variables is None:
+        variables = MODULE_VARIABLES
+    if omit is None:
+        omit = OMIT
+
+    original = sys.modules[module_name]
     members = {'_clod_wrapped': original}
 
-    for attr in dir(rep):
-        if attr not in NO_COPY:
-            value = getattr(rep, attr)
+    for attr in dir(replacement):
+        if attr not in OMIT:
+            value = getattr(replacement, attr)
             if callable(value):
                 value = method(value)
             members[attr] = value
 
-    if callable(rep):
-        members['__call__'] = method(rep)
+    if callable(replacement):
+        members['__call__'] = method(replacement)
 
     members['__getattr__'] = method(original.__getattribute__)
     members['__setattr__'] = method(original.__setattr__)
@@ -67,8 +77,8 @@ def clod(rep, name, variables=MODULE_VARIABLES, no_copy=NO_COPY):
         if v is not none:
             members[k] = v
 
-    sys.modules[name] = type(name, (object,), members)()
-    return original, sys.modules[name]
+    sys.modules[module_name] = type(module_name, (object,), members)()
+    return original, sys.modules[module_name]
 
 
 clod(clod, __name__)
