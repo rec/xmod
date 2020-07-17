@@ -3,7 +3,7 @@ import clod
 TEST = 5
 
 
-class Foo:
+class SimpleClass:
     def __call__(self, a, b):
         return a, b
 
@@ -11,4 +11,4 @@ class Foo:
         return iter((2, 3))
 
 
-clod(Foo(), __name__)
+clod(SimpleClass())

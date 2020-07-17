@@ -1,9 +1,33 @@
 r"""
-🌱 - clod: replace your module with an object - 🌱
-===========================================================
+🌱 - clod: CLass mODule! Give your module the power of an object - 🌱
+=========================================================================
 
-Replace your module with an object, allowing for example "modules" that you can
-call or index.
+_Give your module the power of an object, with ``clod``._
+
+Ever wanted to call a module directly, or index it?
+Or just sick of seeing ``from foo import foo`` in your examples?
+
+``clod`` is a tiny library that solves both these issues in one line of code,
+by extending a module with the methods and members of a Python object.
+
+This is extremely handy for modules that primarily do one thing,
+and little else.
+
+EXAMPLE:
+
+``foo.py``:
+
+.. code-block:: python
+
+    import clod
+
+    # ...
+
+    def foo(*args, **kwargs):
+        return args, kwargs
+
+    clod(foo)
+
 
 """
 
@@ -36,11 +60,16 @@ OMIT = {
     '__setattr__',
 }
 
+WRAPPED_ATTRIBUTE = '_clod_wrapped'
 
-def clod(replacement, module_name, variables=None, omit=None):
+
+def clod(extension=None, name=None, variables=None, omit=None):
     """
-    Replace the system module at ``module_name`` with a replacement, which
-    can be any object.
+    Extend the system module at ``name`` with an object.
+
+    ARGUMENTS
+      extension
+
     """
 
     def method(f):
@@ -50,35 +79,41 @@ def clod(replacement, module_name, variables=None, omit=None):
 
         return wrapped
 
-    if variables is None:
-        variables = MODULE_VARIABLES
-    if omit is None:
-        omit = OMIT
+    if extension is None:
+        # It's a decorator with properties
+        assert name is not None or omit is not None or variables is not None
+        return functools.partial(
+            clod, name=name, variables=variables, omit=omit
+        )
 
-    original = sys.modules[module_name]
-    members = {'_clod_wrapped': original}
+    name = extension.__module__ if name is None else name
+    variables = MODULE_VARIABLES if variables is None else variables
+    omit = OMIT if omit is None else omit
 
-    for attr in dir(replacement):
-        if attr not in OMIT:
-            value = getattr(replacement, attr)
+    original = sys.modules[name]
+    members = {WRAPPED_ATTRIBUTE: original}
+
+    for attr in dir(extension):
+        if attr not in omit:
+            value = getattr(extension, attr)
             if callable(value):
                 value = method(value)
             members[attr] = value
 
-    if callable(replacement):
-        members['__call__'] = method(replacement)
+    if callable(extension):
+        members['__call__'] = method(extension)
 
     members['__getattr__'] = method(original.__getattribute__)
     members['__setattr__'] = method(original.__setattr__)
 
     none = object()
-    for k in MODULE_VARIABLES:
+    for k in variables:
         v = getattr(original, k, none)
         if v is not none:
             members[k] = v
 
-    sys.modules[module_name] = type(module_name, (object,), members)()
-    return original, sys.modules[module_name]
+    sys.modules[name] = type(name, (object,), members)()
+    return extension
 
 
-clod(clod, __name__)
+clod(clod)

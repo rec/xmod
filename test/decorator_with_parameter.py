@@ -1,11 +1,9 @@
 import clod
 
 
+@clod(variables=())
 def foo():
     return 23
 
 
 BAR = 99
-
-
-clod(foo, __name__)

@@ -2,24 +2,36 @@ import unittest
 
 
 class TestClod(unittest.TestCase):
-    def test_function(self):
-        from . import foo
+    def test_simple_function(self):
+        from . import simple_function
 
-        assert foo() == 23
-        assert foo.BAR == 99
+        assert simple_function() == 23
+        assert simple_function.BAR == 99
 
     def test_simple(self):
-        from . import foo2
+        from . import simple_class
 
-        assert foo2(7, 12) == (7, 12)
-        assert list(foo2) == [2, 3]
-        foo2.boing = 'bang'
-        assert foo2.boing == 'bang'
+        assert simple_class(7, 12) == (7, 12)
+        assert list(simple_class) == [2, 3]
+        simple_class.boing = 'bang'
+        assert simple_class.boing == 'bang'
 
     def test_builtin(self):
-        from . import foo3
+        from . import builtin
 
-        assert foo3 == []
-        foo3.append(2)
+        assert builtin == []
+        builtin.append(2)
 
-        assert foo3 == [2]
+        assert builtin == [2]
+
+    def test_decorator(self):
+        from . import decorator
+
+        assert decorator() == 23
+        assert decorator.BAR == 99
+
+    def test_decorator_with_parameter(self):
+        from . import decorator_with_parameter
+
+        assert decorator_with_parameter() == 23
+        assert decorator_with_parameter.BAR == 99
