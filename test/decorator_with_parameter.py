@@ -1,7 +1,7 @@
 import clod
 
 
-@clod(variables=())
+@clod(properties=())
 def foo():
     return 23
 
