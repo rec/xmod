@@ -2,8 +2,8 @@ r"""
 🌱 - xmod: Extend a module with any Python object - 🌱
 =========================================================================
 
-_Give your module the power of an object, with ``xmod`` (and save a
-little typing too)._
+Give your module the awesome power of an object, or maybe just save a
+little typing, with ``xmod``.
 
 Ever wanted to call a module directly, or index it?
 Or just sick of seeing ``from foo import foo`` in your examples?
@@ -13,7 +13,7 @@ by extending a module with the methods and members of a Python object.
 
 This is extremely handy for modules that primarily do one thing.
 
-EXAMPLE: Make a module callable
+EXAMPLE: Make a module callable like a function
 
 .. code-block:: python
 
@@ -51,9 +51,7 @@ EXAMPLE: Make a module look like an object
     # Test at the command line
     >>> import your_module
 
-    >>> assert your_module == []
-
-    >>> assert your_module.A_CONSTANT == 23
+    >>> assert your_module == [] and your_module.A_CONSTANT == 23
 
     >>> your_module.extend(range(3))
 
@@ -90,6 +88,7 @@ OMIT = {
     '__setattr__',
 }
 
+EXTENSION_ATTRIBUTE = '_xmod_extension'
 WRAPPED_ATTRIBUTE = '_xmod_wrapped'
 
 
@@ -113,6 +112,9 @@ def xmod(extension=None, name=None, properties=None, omit=None):
         The name of this symbol in ``sys.modules``.  If this is ``None``
         then ``xmod`` will use ``extension.__module__``.
 
+        This only needs to be be set if ``extension`` is _not_ a function or
+        class defined in the module that's being extended.
+
         If the ``name`` argument is given, it should almost certainly be
         ``__name__``.
 
@@ -123,13 +125,14 @@ def xmod(extension=None, name=None, properties=None, omit=None):
         custom class - they do not get overridden by the extension.
 
         If ``properties`` is None, it defaults to ``xmod.MODULE_PROPERTIES``
-        which seems to work well a lot of the time
+        which seems to work well.
 
       omit
         There is little need to use this argument.
 
         A list of methods _not_ to delegate from the proxy to the extension.
-
+        if ``omit`` is None, it defaults to ``xmod.OMIT``, which seems to work
+        well.
     """
     if extension is None:
         # It's a decorator with properties
@@ -143,7 +146,7 @@ def xmod(extension=None, name=None, properties=None, omit=None):
     omit = OMIT if omit is None else omit
 
     original = sys.modules[name]
-    members = {WRAPPED_ATTRIBUTE: original}
+    members = {EXTENSION_ATTRIBUTE: extension, WRAPPED_ATTRIBUTE: original}
 
     def method(f):
         @functools.wraps(f)
