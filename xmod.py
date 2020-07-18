@@ -64,7 +64,7 @@ __all__ = ('xmod',)
 import functools
 import sys
 
-__version__ = '0.10.0'
+__version__ = '1.0.0'
 
 MODULE_PROPERTIES = {
     '__all__',
