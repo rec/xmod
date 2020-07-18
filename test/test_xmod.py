@@ -1,7 +1,7 @@
 import unittest
 
 
-class TestClod(unittest.TestCase):
+class TestXmod(unittest.TestCase):
     def test_simple_function(self):
         from . import simple_function
 

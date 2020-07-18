@@ -1,4 +1,4 @@
-import clod
+import xmod
 
 TEST = 5
 
@@ -11,4 +11,4 @@ class SimpleClass:
         return iter((2, 3))
 
 
-clod(SimpleClass())
+xmod(SimpleClass())

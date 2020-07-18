@@ -1,6 +1,6 @@
-import clod
+import xmod
 
 TEST = 3
 
 
-clod(list(), __name__)
+xmod(list(), __name__)

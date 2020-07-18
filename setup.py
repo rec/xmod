@@ -16,7 +16,7 @@ _classifiers = [
 
 
 def _version():
-    with open('clod.py') as fp:
+    with open('xmod.py') as fp:
         line = next(i for i in fp if i.startswith('__version__'))
         return line.strip().split()[-1].strip("'")
 
@@ -26,17 +26,16 @@ REQUIREMENTS = Path('requirements.txt').read_text().splitlines()
 
 if __name__ == '__main__':
     setup(
-        name='clod',
+        name='xmod',
         version=_version(),
         author='Tom Ritchford',
         author_email='tom@swirly.com',
-        url='https://github.com/rec/clod',
-        py_modules=['clod'],
+        url='https://github.com/rec/xmod',
+        py_modules=['xmod'],
         description='Create and recursively fill a temporary directory',
         long_description=open('README.rst').read(),
         license='MIT',
         classifiers=_classifiers,
         keywords=['testing', 'modules'],
-        scripts=['clod.py'],
         install_requires=REQUIREMENTS,
     )

@@ -1,7 +1,7 @@
-import clod
+import xmod
 
 
-@clod(properties=())
+@xmod(properties=())
 def foo():
     return 23
 

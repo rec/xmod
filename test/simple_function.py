@@ -1,4 +1,4 @@
-import clod
+import xmod
 
 
 def simple_function():
@@ -8,4 +8,4 @@ def simple_function():
 BAR = 99
 
 
-clod(simple_function)
+xmod(simple_function)
