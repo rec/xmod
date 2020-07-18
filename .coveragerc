@@ -7,7 +7,7 @@ source = clod
 
 [report]
 
-fail_under = 90
+fail_under = 100
 skip_covered = True
 
 exclude_lines =
