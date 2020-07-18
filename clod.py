@@ -66,7 +66,7 @@ __all__ = ('clod',)
 import functools
 import sys
 
-__version__ = '0.9.0'
+__version__ = '0.10.0'
 
 MODULE_PROPERTIES = {
     '__all__',
