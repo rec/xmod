@@ -155,12 +155,14 @@ def xmod(extension=None, name=None, properties=None, omit=None):
 
         return wrapped
 
+    is_type = isinstance(extension, type)
     for attr in dir(extension):
         if attr not in omit:
             value = getattr(extension, attr)
-            if callable(value):
-                value = method(value)
-            members[attr] = value
+            if not callable(value):
+                members[attr] = value
+            elif not is_type:
+                members[attr] = method(value)
 
     if callable(extension):
         members['__call__'] = method(extension)

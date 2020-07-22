@@ -8,6 +8,11 @@ class TestXmod(unittest.TestCase):
         assert simple_function() == 23
         assert simple_function.BAR == 99
 
+    def test_dir(self):
+        from . import actual_class
+
+        dir(actual_class)
+
     def test_simple(self):
         from . import simple_class
 
