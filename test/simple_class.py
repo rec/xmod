@@ -11,4 +11,4 @@ class SimpleClass:
         return iter((2, 3))
 
 
-xmod(SimpleClass())
+xmod(SimpleClass(), full=True)

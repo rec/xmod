@@ -2,40 +2,34 @@ r"""
 🌱 - xmod: Extend a module with any Python object - 🌱
 =========================================================================
 
+Callable modules!  Indexable modules!?
+
+Ever wanted to call a module directly, or index it?  Or just sick of seeing
+``from foo import foo`` in your examples?
+
 Give your module the awesome power of an object, or maybe just save a
 little typing, with ``xmod``.
 
-Ever wanted to call a module directly, or index it?
-Or just sick of seeing ``from foo import foo`` in your examples?
+``xmod`` is a tiny library that extends a module to do things that normally
+only a class could do - handy for modules that "just do one thing".
 
-``xmod`` is a tiny library that solves both these issues in one line of code,
-by extending a module with the methods and members of a Python object.
 
-This is extremely handy for modules that primarily do one thing.
-
-EXAMPLE: Make a module callable like a function
+EXAMPLE: Make a module callable as a function
 
 .. code-block:: python
 
-    # In your_module.py
     import xmod
 
-    A_CONSTANT = 23
-
     @xmod
-    def a_function(*args, **kwargs):
-        print('a function!')
-        return args, kwargs
+    def a_function():
+        return 'HERE!!'
 
 
     # Test at the command line
     >>> import your_module
+    >>> your_module()
+    HERE!!
 
-    >>> your_module(2, 3, a=5)
-    a function!
-    (2, 3), {'a': 5}
-
-    >>> assert your_module.A_CONSTANT == 23
 
 EXAMPLE: Make a module look like an object
 
@@ -44,21 +38,15 @@ EXAMPLE: Make a module look like an object
     # In your_module.py
     import xmod
 
-    A_CONSTANT = 23
-
     xmod(list(), __name__)
 
     # Test at the command line
     >>> import your_module
-
-    >>> assert your_module == [] and your_module.A_CONSTANT == 23
-
+    >>> assert your_module == []
     >>> your_module.extend(range(3))
-
     >>> print(your_module)
     [0, 1, 2]
 """
-
 __all__ = ('xmod',)
 
 import functools
@@ -92,7 +80,7 @@ EXTENSION_ATTRIBUTE = '_xmod_extension'
 WRAPPED_ATTRIBUTE = '_xmod_wrapped'
 
 
-def xmod(extension=None, name=None, properties=None, omit=None):
+def xmod(extension=None, name=None, full=None, props=None, omit=None):
     """
     Extend the system module at ``name`` with any Python object.
 
@@ -118,13 +106,19 @@ def xmod(extension=None, name=None, properties=None, omit=None):
         If the ``name`` argument is given, it should almost certainly be
         ``__name__``.
 
-      properties
+      full
+        If False, just add extension as a callable.
+        If True, extend the module with all members of ``extension``.
+        If None, add the extension if it's a callable, otherwise
+        extend the module with all members of ``extension
+
+      props
         There is little need to use this argument.
 
         Properties in this list are copied directly from the module into the
         custom class - they do not get overridden by the extension.
 
-        If ``properties`` is None, it defaults to ``xmod.MODULE_PROPERTIES``
+        If ``props`` is None, it defaults to ``xmod.MODULE_PROPERTIES``
         which seems to work well.
 
       omit
@@ -136,17 +130,14 @@ def xmod(extension=None, name=None, properties=None, omit=None):
     """
     if extension is None:
         # It's a decorator with properties
-        assert name is not None or omit is not None or properties is not None
+        assert name is not None or omit is not None or props is not None
         return functools.partial(
-            xmod, name=name, properties=properties, omit=omit
+            xmod, name=name, full=full, props=props, omit=omit
         )
 
     name = extension.__module__ if name is None else name
-    properties = MODULE_PROPERTIES if properties is None else properties
-    omit = OMIT if omit is None else omit
-
-    original = sys.modules[name]
-    members = {EXTENSION_ATTRIBUTE: extension, WRAPPED_ATTRIBUTE: original}
+    module = sys.modules[name]
+    members = {EXTENSION_ATTRIBUTE: extension, WRAPPED_ATTRIBUTE: module}
 
     def method(f):
         @functools.wraps(f)
@@ -155,24 +146,29 @@ def xmod(extension=None, name=None, properties=None, omit=None):
 
         return wrapped
 
-    is_type = isinstance(extension, type)
-    for attr in dir(extension):
-        if attr not in omit:
-            value = getattr(extension, attr)
-            if not callable(value):
-                members[attr] = value
-            elif not is_type:
-                members[attr] = method(value)
-
     if callable(extension):
         members['__call__'] = method(extension)
+    elif full is False:
+        raise ValueError('extension must be callable if full is False')
+    else:
+        full = True
 
-    members['__getattr__'] = method(original.__getattribute__)
-    members['__setattr__'] = method(original.__setattr__)
+    omit = OMIT if omit is None else omit
+    for attr in dir(extension) if full else ():
+        if attr not in omit:
+            v = getattr(extension, attr)
+            members[attr] = method(v) if callable(v) else v
+
+    members['__getattr__'] = method(module.__getattribute__)
+    members['__setattr__'] = method(module.__setattr__)
+
+    keys = set(members)
+    members['__dir__'] = lambda self: sorted(keys.union(dir(module)))
 
     none = object()
-    for k in properties:
-        v = getattr(original, k, none)
+    props = MODULE_PROPERTIES if props is None else props
+    for k in props:
+        v = getattr(module, k, none)
         if v is not none:
             members[k] = v
 
