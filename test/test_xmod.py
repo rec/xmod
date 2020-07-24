@@ -21,15 +21,20 @@ class TestXmod(unittest.TestCase):
         simple_class.boing = 'bang'
         assert simple_class.boing == 'bang'
 
-    def test_builtin(self):
-        from . import builtin
+    def test_list(self):
+        from . import looks_like_list
 
-        assert builtin == []
-        builtin.append(2)
+        assert looks_like_list == []
+        looks_like_list.append(2)
 
-        assert builtin == [2]
+        assert looks_like_list == [2]
 
-    def test_decorator(self):
+        looks_like_list[:] = range(3)
+        looks_like_list[0] = 'a'
+        assert looks_like_list == ['a', 1, 2]
+        assert len(looks_like_list) == 3
+
+    def test_decorator_no_parameter(self):
         from . import decorator
 
         assert decorator() == 23
