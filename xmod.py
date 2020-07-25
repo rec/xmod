@@ -68,16 +68,19 @@ EXTENSION_ATTRIBUTE = '_xmod_extension'
 WRAPPED_ATTRIBUTE = '_xmod_wrapped'
 
 
-def xmod(extension=None, name=None, full=None, props=None, omit=None):
+def xmod(
+    extension=None, name=None, full=None, props=None, omit=None, mutable=False
+):
     """
     Extend the system module at ``name`` with any Python object.
 
     The original module is replaced in ``sys.modules`` by a proxy class
-    which delegates attributes, first to the extension, and then to the
-    original module.
+    which delegates attributes to the original module, and then adds
+    attributes from the extension.
 
-    ``xmod`` can also be used as a decorator, both with and without
-    parameters.
+    In the most common use case, the extension is a callable and only the
+    ``__call__`` method is delegated, so ``xmod`` can also be used as a
+    decorator, both with and without parameters.
 
     ARGUMENTS
       extension
@@ -96,48 +99,65 @@ def xmod(extension=None, name=None, full=None, props=None, omit=None):
 
       full
         If False, just add extension as a callable.
+
         If True, extend the module with all members of ``extension``.
-        If None, add the extension if it's a callable, otherwise
+
+        If None, the default, add the extension if it's a callable, otherwise
         extend the module with all members of ``extension``.
+
+      mutable:
+        If True, the attributes on the proxy are mutable
 
       omit
         A list of methods _not_ to delegate from the proxy to the extension.
+
         If ``omit`` is None, it defaults to ``xmod.OMIT``, which seems to
         work well.
     """
     if extension is None:
         # It's a decorator with properties
-        assert name is not None or omit is not None or props is not None
         return functools.partial(
-            xmod, name=name, full=full, props=props, omit=omit
+            xmod, name=name, full=full, props=props, omit=omit, mutable=mutable
         )
 
     name = extension.__module__ if name is None else name
     module = sys.modules[name]
     members = {EXTENSION_ATTRIBUTE: extension, WRAPPED_ATTRIBUTE: module}
 
-    def method(f):
+    def method(mutates, f):
+        def fail(*_):
+            raise TypeError('Class is immutable')
+
         @functools.wraps(f)
         def wrapped(self, *args, **kwargs):
             return f(*args, **kwargs)
 
-        return wrapped
+        return fail if mutates and not mutable else wrapped
 
     if callable(extension):
-        members['__call__'] = method(extension)
+        members['__call__'] = method(False, extension)
     elif full is False:
         raise ValueError('extension must be callable if full is False')
     else:
         full = True
 
-    omit = OMIT if omit is None else omit
-    for attr in dir(extension) if full else ():
-        if attr not in omit:
-            v = getattr(extension, attr)
-            members[attr] = method(v) if callable(v) else v
+    def prop(k):
+        return property(
+            method(False, lambda: getattr(extension, k)),
+            method(True, lambda v: setattr(extension, k, v)),
+            method(True, lambda _: delattr(extension, k)),
+        )
 
-    members['__getattr__'] = method(module.__getattribute__)
-    members['__setattr__'] = method(module.__setattr__)
+    omit = OMIT if omit is None else set(omit)
+    for a in dir(extension) if full else ():
+        if a not in omit:
+            value = getattr(extension, a)
+            is_magic = a.startswith('__') and callable(value)
+            members[a] = method(False, value) if is_magic else prop(a)
+
+    members['__getattr__'] = method(False, module.__getattribute__)
+    members['__setattr__'] = method(True, module.__setattr__)
+    members['__delattr__'] = method(True, module.__delattr__)
 
     keys = set(members)
     members['__dir__'] = lambda self: sorted(keys.union(dir(module)))

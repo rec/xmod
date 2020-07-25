@@ -18,6 +18,7 @@ class TestXmod(unittest.TestCase):
             '__builtins__',
             '__cached__',
             '__call__',
+            '__delattr__',
             '__doc__',
             '__file__',
             '__getattr__',
@@ -41,6 +42,7 @@ class TestXmod(unittest.TestCase):
             '__builtins__',
             '__cached__',
             '__call__',
+            '__delattr__',
             '__doc__',
             '__file__',
             '__getattr__',
@@ -54,16 +56,33 @@ class TestXmod(unittest.TestCase):
             'simple_function',
             'xmod',
         ]
-
         assert actual == expected
+
+    def test_mutable(self):
+        from . import mutable_function
+
+        assert mutable_function() == 23
+        assert mutable_function.FOO == 23
+        assert mutable_function.BAR == 99
+        assert not hasattr(mutable_function, 'BAZ')
+
+        mutable_function.FOO = 32
+        del mutable_function.BAR
+        mutable_function.BAZ = 5
+
+        assert mutable_function() == 32
+        assert mutable_function.FOO == 32
+        assert not hasattr(mutable_function, 'BAR')
+        assert mutable_function.BAZ == 5
 
     def test_simple(self):
         from . import simple_class
 
         assert simple_class(7, 12) == (7, 12)
         assert list(simple_class) == [2, 3]
-        simple_class.boing = 'bang'
-        assert simple_class.boing == 'bang'
+        with self.assertRaises(TypeError) as m:
+            simple_class.boing = 'bang'
+        assert m.exception.args[0] == 'Class is immutable'
 
     def test_error(self):
         import xmod
