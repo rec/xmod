@@ -54,18 +54,6 @@ import sys
 
 __version__ = '1.0.1'
 
-MODULE_PROPERTIES = {
-    '__all__',
-    '__cached__',
-    '__doc__',
-    '__file__',
-    '__loader__',
-    '__name__',
-    '__package__',
-    '__path__',
-    '__spec__',
-}
-
 OMIT = {
     '__class__',
     '__getattr__',
@@ -110,23 +98,12 @@ def xmod(extension=None, name=None, full=None, props=None, omit=None):
         If False, just add extension as a callable.
         If True, extend the module with all members of ``extension``.
         If None, add the extension if it's a callable, otherwise
-        extend the module with all members of ``extension
-
-      props
-        There is little need to use this argument.
-
-        Properties in this list are copied directly from the module into the
-        custom class - they do not get overridden by the extension.
-
-        If ``props`` is None, it defaults to ``xmod.MODULE_PROPERTIES``
-        which seems to work well.
+        extend the module with all members of ``extension``.
 
       omit
-        There is little need to use this argument.
-
         A list of methods _not_ to delegate from the proxy to the extension.
-        if ``omit`` is None, it defaults to ``xmod.OMIT``, which seems to work
-        well.
+        If ``omit`` is None, it defaults to ``xmod.OMIT``, which seems to
+        work well.
     """
     if extension is None:
         # It's a decorator with properties
@@ -164,13 +141,6 @@ def xmod(extension=None, name=None, full=None, props=None, omit=None):
 
     keys = set(members)
     members['__dir__'] = lambda self: sorted(keys.union(dir(module)))
-
-    none = object()
-    props = MODULE_PROPERTIES if props is None else props
-    for k in props:
-        v = getattr(module, k, none)
-        if v is not none:
-            members[k] = v
 
     proxy_class = type(name, (object,), members)
     sys.modules[name] = proxy_class()
