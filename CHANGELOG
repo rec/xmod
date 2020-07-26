@@ -1,3 +1,9 @@
+## v1.1.0 - 20/07/26
+
+* New mutable parameter
+* Chop out properies entirely
+* Fix dir() for xmod'ed items (fix #1)
+
 ## v1.0.1 - 20/07/22
 
 * Handle classes correctly
