@@ -106,7 +106,9 @@ def xmod(
         extend the module with all members of ``extension``.
 
       mutable:
-        If True, the attributes on the proxy are mutable
+        If True, the attributes on the proxy are mutable and write through to
+        the underlying module.  If False, the default, attributes on the proxy
+        cannot be changed.
 
       omit
         A list of methods _not_ to delegate from the proxy to the extension.
@@ -124,18 +126,21 @@ def xmod(
     module = sys.modules[name]
     members = {EXTENSION_ATTRIBUTE: extension, WRAPPED_ATTRIBUTE: module}
 
-    def method(mutates, f):
-        def fail(*_):
-            raise TypeError('Class is immutable')
-
+    def method(f):
         @functools.wraps(f)
         def wrapped(self, *args, **kwargs):
             return f(*args, **kwargs)
 
-        return fail if mutates and not mutable else wrapped
+        return wrapped
+
+    def mutator(f):
+        def fail(*_):
+            raise TypeError('Class is immutable')
+
+        return method(f) if mutable else fail
 
     if callable(extension):
-        members['__call__'] = method(False, extension)
+        members['__call__'] = method(extension)
     elif full is False:
         raise ValueError('extension must be callable if full is False')
     else:
@@ -143,9 +148,9 @@ def xmod(
 
     def prop(k):
         return property(
-            method(False, lambda: getattr(extension, k)),
-            method(True, lambda v: setattr(extension, k, v)),
-            method(True, lambda _: delattr(extension, k)),
+            method(lambda: getattr(extension, k)),
+            mutator(lambda v: setattr(extension, k, v)),
+            mutator(lambda _: delattr(extension, k)),
         )
 
     omit = OMIT if omit is None else set(omit)
@@ -153,11 +158,11 @@ def xmod(
         if a not in omit:
             value = getattr(extension, a)
             is_magic = a.startswith('__') and callable(value)
-            members[a] = method(False, value) if is_magic else prop(a)
+            members[a] = method(value) if is_magic else prop(a)
 
-    members['__getattr__'] = method(False, module.__getattribute__)
-    members['__setattr__'] = method(True, module.__setattr__)
-    members['__delattr__'] = method(True, module.__delattr__)
+    members['__getattr__'] = method(module.__getattribute__)
+    members['__setattr__'] = mutator(module.__setattr__)
+    members['__delattr__'] = mutator(module.__delattr__)
 
     keys = set(members)
     members['__dir__'] = lambda self: sorted(keys.union(dir(module)))
