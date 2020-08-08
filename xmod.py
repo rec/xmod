@@ -1,4 +1,4 @@
-r"""
+"""
 🌱 - xmod: Extend a module with any Python object - 🌱
 =========================================================================
 
@@ -18,6 +18,7 @@ EXAMPLE: Make a module callable as a function
 
 .. code-block:: python
 
+    # In your_module.py
     import xmod
 
     @xmod
@@ -150,7 +151,7 @@ def xmod(
         return property(
             method(lambda: getattr(extension, k)),
             mutator(lambda v: setattr(extension, k, v)),
-            mutator(lambda _: delattr(extension, k)),
+            mutator(lambda: delattr(extension, k)),
         )
 
     omit = OMIT if omit is None else set(omit)
