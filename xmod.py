@@ -167,6 +167,7 @@ def xmod(
 
     keys = set(members)
     members['__dir__'] = lambda self: sorted(keys.union(dir(module)))
+    members['__doc__'] = getattr(module, '__doc__')
 
     proxy_class = type(name, (object,), members)
     sys.modules[name] = proxy_class()
