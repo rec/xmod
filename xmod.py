@@ -104,7 +104,7 @@ def xmod(
         If True, extend the module with all members of ``extension``.
 
         If None, the default, add the extension if it's a callable, otherwise
-        extend the module with all members of ``extension``.
+ extend the module with all members of ``extension``.
 
       mutable:
         If True, the attributes on the proxy are mutable and write through to
@@ -125,7 +125,7 @@ def xmod(
 
     name = extension.__module__ if name is None else name
     module = sys.modules[name]
-    members = {EXTENSION_ATTRIBUTE: extension, WRAPPED_ATTRIBUTE: module}
+    members = {WRAPPED_ATTRIBUTE: module}
 
     def method(f):
         @functools.wraps(f)
@@ -142,9 +142,11 @@ def xmod(
 
     if callable(extension):
         members['__call__'] = method(extension)
+        members[EXTENSION_ATTRIBUTE] = staticmethod(extension)
     elif full is False:
         raise ValueError('extension must be callable if full is False')
     else:
+        members[EXTENSION_ATTRIBUTE] = extension
         full = True
 
     def prop(k):
