@@ -104,7 +104,7 @@ def xmod(
         If True, extend the module with all members of ``extension``.
 
         If None, the default, add the extension if it's a callable, otherwise
- extend the module with all members of ``extension``.
+        extend the module with all members of ``extension``.
 
       mutable:
         If True, the attributes on the proxy are mutable and write through to
