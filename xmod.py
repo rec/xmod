@@ -123,10 +123,6 @@ def xmod(
             xmod, name=name, full=full, props=props, omit=omit, mutable=mutable
         )
 
-    name = extension.__module__ if name is None else name
-    module = sys.modules[name]
-    members = {WRAPPED_ATTRIBUTE: module}
-
     def method(f):
         @functools.wraps(f)
         def wrapped(self, *args, **kwargs):
@@ -140,15 +136,6 @@ def xmod(
 
         return method(f) if mutable else fail
 
-    if callable(extension):
-        members['__call__'] = method(extension)
-        members[EXTENSION_ATTRIBUTE] = staticmethod(extension)
-    elif full is False:
-        raise ValueError('extension must be callable if full is False')
-    else:
-        members[EXTENSION_ATTRIBUTE] = extension
-        full = True
-
     def prop(k):
         return property(
             method(lambda: getattr(extension, k)),
@@ -156,18 +143,33 @@ def xmod(
             mutator(lambda: delattr(extension, k)),
         )
 
+    name = extension.__module__ if name is None else name
+    module = sys.modules[name]
+    members = {
+        WRAPPED_ATTRIBUTE: module,
+        '__getattr__': method(module.__getattribute__),
+        '__setattr__': mutator(module.__setattr__),
+        '__delattr__': mutator(module.__delattr__),
+        '__doc__': getattr(module, '__doc__'),
+    }
+
+    if callable(extension):
+        members['__call__'] = method(extension)
+        members[EXTENSION_ATTRIBUTE] = staticmethod(extension)
+
+    elif full is False:
+        raise ValueError('extension must be callable if full is False')
+
+    else:
+        members[EXTENSION_ATTRIBUTE] = extension
+        full = True
+
     omit = OMIT if omit is None else set(omit)
     for a in dir(extension) if full else ():
         if a not in omit:
             value = getattr(extension, a)
             is_magic = a.startswith('__') and callable(value)
             members[a] = method(value) if is_magic else prop(a)
-
-    members['__getattr__'] = method(module.__getattribute__)
-    members['__setattr__'] = mutator(module.__setattr__)
-    members['__delattr__'] = mutator(module.__delattr__)
-
-    members['__doc__'] = getattr(module, '__doc__')
 
     keys = set(members)
     members['__dir__'] = lambda self: sorted(keys.union(dir(module)))
