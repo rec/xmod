@@ -1,3 +1,7 @@
+## v1.2.1 - 20/11/17
+
+* Fix __dir__ to include itself
+
 ## v1.2.0 - 20/11/16
 
 * Make sure that __doc__ is included in dir()
