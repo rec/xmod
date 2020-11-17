@@ -12,50 +12,14 @@ class TestXmod(unittest.TestCase):
         from . import actual_class
 
         actual = dir(actual_class)
-        expected = [
-            'ActualClass',
-            'TEST',
-            '__builtins__',
-            '__cached__',
-            '__call__',
-            '__delattr__',
-            '__doc__',
-            '__file__',
-            '__getattr__',
-            '__loader__',
-            '__name__',
-            '__package__',
-            '__setattr__',
-            '__spec__',
-            '_xmod_extension',
-            '_xmod_wrapped',
-            'xmod',
-        ]
+        expected = ['ActualClass', 'TEST'] + COMMON + ['xmod']
         assert actual == expected
 
     def test_dir2(self):
         from . import simple_function
 
         actual = dir(simple_function)
-        expected = [
-            'BAR',
-            '__builtins__',
-            '__cached__',
-            '__call__',
-            '__delattr__',
-            '__doc__',
-            '__file__',
-            '__getattr__',
-            '__loader__',
-            '__name__',
-            '__package__',
-            '__setattr__',
-            '__spec__',
-            '_xmod_extension',
-            '_xmod_wrapped',
-            'simple_function',
-            'xmod',
-        ]
+        expected = ['BAR'] + COMMON + ['simple_function', 'xmod']
         assert actual == expected
 
     def test_mutable(self):
@@ -117,3 +81,22 @@ class TestXmod(unittest.TestCase):
 
         assert decorator_with_parameter() == 23
         assert decorator_with_parameter.BAR == 99
+
+
+COMMON = [
+    '__builtins__',
+    '__cached__',
+    '__call__',
+    '__delattr__',
+    '__dir__',
+    '__doc__',
+    '__file__',
+    '__getattr__',
+    '__loader__',
+    '__name__',
+    '__package__',
+    '__setattr__',
+    '__spec__',
+    '_xmod_extension',
+    '_xmod_wrapped',
+]

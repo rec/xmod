@@ -13,7 +13,6 @@ little typing, with `xmod`.
 `xmod` is a tiny library that extends a module to do things that normally
 only a class could do - handy for modules that "just do one thing".
 
-
 EXAMPLE: Make a module callable as a function
 
 .. code-block:: python
@@ -171,8 +170,10 @@ def xmod(
             is_magic = a.startswith('__') and callable(value)
             members[a] = method(value) if is_magic else prop(a)
 
-    keys = set(members)
-    members['__dir__'] = lambda self: sorted(keys.union(dir(module)))
+    def directory(self):
+        return sorted(set(members).union(dir(module)))
+
+    members['__dir__'] = directory
 
     proxy_class = type(name, (object,), members)
     sys.modules[name] = proxy_class()
