@@ -1,3 +1,7 @@
+## v1.3.0 - 20/12/01
+
+* Better handling of mutable classes
+
 ## v1.2.1 - 20/11/17
 
 * Fix __dir__ to include itself
