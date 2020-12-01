@@ -144,11 +144,36 @@ def xmod(
 
     name = extension.__module__ if name is None else name
     module = sys.modules[name]
+
+    def _getattr(k):
+        try:
+            return getattr(extension, k)
+        except AttributeError:
+            return getattr(module, k)
+
+    def _setattr(k, v):
+        if hasattr(extension, k):
+            setattr(extension, k, v)
+        else:
+            setattr(module, k, v)
+
+    def _delattr(k):
+        success = True
+        try:
+            delattr(extension, k)
+        except AttributeError:
+            success = False
+        try:
+            delattr(module, k)
+        except AttributeError:
+            if not success:
+                raise
+
     members = {
         WRAPPED_ATTRIBUTE: module,
-        '__getattr__': method(module.__getattribute__),
-        '__setattr__': mutator(module.__setattr__),
-        '__delattr__': mutator(module.__delattr__),
+        '__getattr__': method(_getattr),
+        '__setattr__': mutator(_setattr),
+        '__delattr__': mutator(_delattr),
         '__doc__': getattr(module, '__doc__'),
     }
 
@@ -168,7 +193,10 @@ def xmod(
         if a not in omit:
             value = getattr(extension, a)
             is_magic = a.startswith('__') and callable(value)
-            members[a] = method(value) if is_magic else prop(a)
+            if is_magic:
+                members[a] = method(value)
+            else:
+                members[a] = prop(a)
 
     def directory(self):
         return sorted(set(members).union(dir(module)))

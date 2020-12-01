@@ -39,6 +39,26 @@ class TestXmod(unittest.TestCase):
         assert not hasattr(mutable_function, 'BAR')
         assert mutable_function.BAZ == 5
 
+    def test_mutable_class(self):
+        from . import mutable_class as mc
+
+        assert mc.one() == 19
+        # assert mc.onep == 19
+
+        mc.ONE = 32
+        assert mc.one() == 32
+        # assert mc.onep == 32
+
+        assert mc.two() == 12
+        # assert mc.twop == 12
+
+        # del mc.TWO
+        # with self.assertRaises(AttributeError):
+        #     mc.two()
+
+        # with self.assertRaises(AttributeError):
+        #     mc.twop
+
     def test_simple(self):
         from . import simple_class
 
