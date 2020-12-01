@@ -3,27 +3,27 @@ import unittest
 
 class TestXmod(unittest.TestCase):
     def test_simple_function(self):
-        from . import simple_function
+        from .modules import simple_function
 
         assert simple_function() == 23
         assert simple_function.BAR == 99
 
     def test_dir(self):
-        from . import actual_class
+        from .modules import actual_class
 
         actual = dir(actual_class)
         expected = ['ActualClass', 'TEST'] + COMMON + ['xmod']
         assert actual == expected
 
     def test_dir2(self):
-        from . import simple_function
+        from .modules import simple_function
 
         actual = dir(simple_function)
         expected = ['BAR'] + COMMON + ['simple_function', 'xmod']
         assert actual == expected
 
     def test_mutable(self):
-        from . import mutable_function
+        from .modules import mutable_function
 
         assert mutable_function() == 23
         assert mutable_function.FOO == 23
@@ -40,7 +40,7 @@ class TestXmod(unittest.TestCase):
         assert mutable_function.BAZ == 5
 
     def test_mutable_class(self):
-        from . import mutable_class as mc
+        from .modules import mutable_class as mc
 
         assert mc.one() == 19
         # assert mc.onep == 19
@@ -60,7 +60,7 @@ class TestXmod(unittest.TestCase):
         #     mc.twop
 
     def test_simple(self):
-        from . import simple_class
+        from .modules import simple_class
 
         assert simple_class(7, 12) == (7, 12)
         assert list(simple_class) == [2, 3]
@@ -78,7 +78,7 @@ class TestXmod(unittest.TestCase):
         assert actual == expected
 
     def test_list(self):
-        from . import looks_like_list
+        from .modules import looks_like_list
 
         assert looks_like_list == []
         looks_like_list.append(2)
@@ -91,13 +91,13 @@ class TestXmod(unittest.TestCase):
         assert len(looks_like_list) == 3
 
     def test_decorator_no_parameter(self):
-        from . import decorator
+        from .modules import decorator
 
         assert decorator() == 23
         assert decorator.BAR == 99
 
     def test_decorator_with_parameter(self):
-        from . import decorator_with_parameter
+        from .modules import decorator_with_parameter
 
         assert decorator_with_parameter() == 23
         assert decorator_with_parameter.BAR == 99
