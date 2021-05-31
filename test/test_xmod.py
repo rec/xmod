@@ -50,6 +50,8 @@ class TestXmod(unittest.TestCase):
         # assert mc.onep == 32
 
         assert mc.two() == 12
+        mc.TWO = 23
+        assert mc.two() == 23
         # assert mc.twop == 12
 
         # del mc.TWO
@@ -66,7 +68,7 @@ class TestXmod(unittest.TestCase):
         assert list(simple_class) == [2, 3]
         with self.assertRaises(TypeError) as m:
             simple_class.boing = 'bang'
-        assert m.exception.args[0] == 'Class is immutable'
+        assert m.exception.args[0].startswith('Class is immutable')
 
     def test_error(self):
         import xmod

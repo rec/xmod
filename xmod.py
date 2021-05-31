@@ -130,8 +130,8 @@ def xmod(
         return wrapped
 
     def mutator(f):
-        def fail(*_):
-            raise TypeError('Class is immutable')
+        def fail(*args, **kwargs):
+            raise TypeError(f'Class is immutable {args} {kwargs}')
 
         return method(f) if mutable else fail
 
@@ -195,7 +195,7 @@ def xmod(
             is_magic = a.startswith('__') and callable(value)
             if is_magic:
                 members[a] = method(value)
-            else:
+            elif False:  # TODO: enable or delete this
                 members[a] = prop(a)
 
     def directory(self):
