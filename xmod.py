@@ -141,11 +141,9 @@ def xmod(
             mutator(lambda v: setattr(extension, k, v)),
             mutator(lambda: delattr(extension, k)),
         )
-    if name is None:
-        if isinstance(extension, functools.partial):
-            name = extension.func.__module__
-        else:
-            name = extension.__module__
+    name = name or getattr(extension, '__module__', None)
+    if not name:
+        raise ValueError('`name` parameter must be set')
 
     module = sys.modules[name]
 
