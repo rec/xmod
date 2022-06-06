@@ -1,3 +1,8 @@
+## v1.3.1 - 20/12/01
+
+* Fix an issue with functools.partial
+* Several maintenace changes
+
 ## v1.3.0 - 20/12/01
 
 * Better handling of mutable classes
