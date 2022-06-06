@@ -141,8 +141,12 @@ def xmod(
             mutator(lambda v: setattr(extension, k, v)),
             mutator(lambda: delattr(extension, k)),
         )
+    if name is None:
+        if isinstance(extension, functools.partial):
+            name = extension.func.__module__
+        else:
+            name = extension.__module__
 
-    name = extension.__module__ if name is None else name
     module = sys.modules[name]
 
     def _getattr(k):

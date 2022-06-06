@@ -104,6 +104,10 @@ class TestXmod(unittest.TestCase):
         assert decorator_with_parameter() == 23
         assert decorator_with_parameter.BAR == 99
 
+    def test_partial_function(self):
+        from .modules import partial_function
+
+        assert partial_function(1, 2) == (0, 1, 2, 3)
 
 COMMON = [
     '__builtins__',
