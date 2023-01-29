@@ -31,7 +31,7 @@ if __name__ == '__main__':
         author_email='tom@swirly.com',
         url='https://github.com/rec/xmod',
         py_modules=['xmod'],
-        description='Create and recursively fill a temporary directory',
+        description='🌱 Create and recursively fill a temporary directory 🌱',
         long_description=open('README.rst').read(),
         license='MIT',
         classifiers=_classifiers,
