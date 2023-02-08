@@ -15,7 +15,6 @@ only a class could do - handy for modules that "just do one thing".
 
 EXAMPLE: Make a module callable as a function
 
-.. code-block:: python
 
     # In your_module.py
     import xmod
@@ -33,7 +32,6 @@ EXAMPLE: Make a module callable as a function
 
 EXAMPLE: Make a module look like an object
 
-.. code-block:: python
 
     # In your_module.py
     import xmod
