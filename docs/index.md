@@ -2,8 +2,8 @@
 
 ::: xmod
 
-## More info
+## About this project
 
-* [ Code ]( https://github.com/rec/xmod )
-* [ Me ]( https://github.com/rec )
+* [ Source code ]( https://github.com/rec/xmod )
+* [ More by this author ]( https://github.com/rec )
 * [ Sponsors ]( https://github.com/sponsors/rec )
