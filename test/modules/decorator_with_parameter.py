@@ -1,7 +1,7 @@
 import xmod
 
 
-@xmod(props=())
+@xmod(full=False)
 def foo():
     return 23
 

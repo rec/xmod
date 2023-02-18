@@ -1,6 +1,5 @@
 """
 🌱 - xmod: Extend a module with any Python object - 🌱
-=========================================================================
 
 Callable modules!  Indexable modules!?
 
@@ -13,8 +12,7 @@ little typing, with `xmod`.
 `xmod` is a tiny library that extends a module to do things that normally
 only a class could do - handy for modules that "just do one thing".
 
-EXAMPLE: Make a module callable as a function
-
+## Example: Make a module callable like a function!
 
     # In your_module.py
     import xmod
@@ -29,9 +27,7 @@ EXAMPLE: Make a module callable as a function
     >>> your_module()
     HERE!!
 
-
-EXAMPLE: Make a module look like an object
-
+## Example: Make a module look like a list!?!
 
     # In your_module.py
     import xmod
@@ -47,6 +43,7 @@ EXAMPLE: Make a module look like an object
 """
 __all__ = ('xmod',)
 
+from typing import Any, Optional, Sequence
 import functools
 import sys
 
@@ -66,8 +63,12 @@ WRAPPED_ATTRIBUTE = '_xmod_wrapped'
 
 
 def xmod(
-    extension=None, name=None, full=None, props=None, omit=None, mutable=False
-):
+    extension: Optional = None,
+    name: Optional[str] = None,
+    full: Optional[bool] = None,
+    omit: Optional[Sequence[str]] = None,
+    mutable: bool = False
+) -> Any:
     """
     Extend the system module at `name` with any Python object.
 
@@ -79,13 +80,11 @@ def xmod(
     `__call__` method is delegated, so `xmod` can also be used as a
     decorator, both with and without parameters.
 
-    ARGUMENTS
-      extension
-        The object whose methods and properties extend the namespace.
+    Args:
+      extension: The object whose methods and properties extend the namespace.
         This includes magic methods like __call__ and __getitem__.
 
-      name
-        The name of this symbol in `sys.modules`.  If this is `None`
+      name: The name of this symbol in `sys.modules`.  If this is `None`
         then `xmod` will use `extension.__module__`.
 
         This only needs to be be set if `extension` is _not_ a function or
@@ -94,29 +93,29 @@ def xmod(
         If the `name` argument is given, it should almost certainly be
         `__name__`.
 
-      full
-        If `False`, just add extension as a callable.
+      full: If `False`, just add extension as a callable.
 
         If `True`, extend the module with all members of `extension`.
 
         If `None`, the default, add the extension if it's a callable, otherwise
         extend the module with all members of `extension`.
 
-      mutable:
-        If `True`, the attributes on the proxy are mutable and write through to
-        the underlying module.  If `False`, the default, attributes on the
-        proxy cannot be changed.
+      mutable: If `True`, the attributes on the proxy are mutable and write
+        through to the underlying module.  If `False`, the default, attributes
+        on the proxy cannot be changed.
 
-      omit
-        A list of methods _not_ to delegate from the proxy to the extension.
+      omit: A list of methods _not_ to delegate from the proxy to the extension.
 
         If `omit` is None, it defaults to `xmod.OMIT`, which seems to
         work well.
+
+    Returns:
+        The original item that got decorated, `extension`
     """
     if extension is None:
         # It's a decorator with properties
         return functools.partial(
-            xmod, name=name, full=full, props=props, omit=omit, mutable=mutable
+            xmod, name=name, full=full, omit=omit, mutable=mutable
         )
 
     def method(f):
