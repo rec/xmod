@@ -1,5 +1,5 @@
 """
-🌱 - xmod: Extend a module with any Python object - 🌱
+🌱 Turn any object into a module 🌱
 
 Callable modules!  Indexable modules!?
 
@@ -9,7 +9,7 @@ Ever wanted to call a module directly, or index it?  Or just sick of seeing
 Give your module the awesome power of an object, or maybe just save a
 little typing, with `xmod`.
 
-`xmod` is a tiny library that extends a module to do things that normally
+`xmod` is a tiny library that lets a module to do things that normally
 only a class could do - handy for modules that "just do one thing".
 
 ## Example: Make a module callable like a function!
@@ -110,7 +110,7 @@ def xmod(
         work well.
 
     Returns:
-        The original item that got decorated, `extension`
+        `extension`, the original item that got decorated
     """
     if extension is None:
         # It's a decorator with properties
