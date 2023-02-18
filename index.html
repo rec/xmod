@@ -189,40 +189,25 @@
     xmod
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#xmod---xmod-extend-a-module-with-any-python-object-" class="md-nav__link">
-    &#127793; - xmod: Extend a module with any Python object - &#127793;
+    <nav class="md-nav" aria-label="xmod">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#xmod--example-make-a-module-callable-like-a-function" class="md-nav__link">
+    Example: Make a module callable like a function!
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#xmod--in-your_modulepy" class="md-nav__link">
-    In your_module.py
+        
+          <li class="md-nav__item">
+  <a href="#xmod--example-make-a-module-look-like-a-list" class="md-nav__link">
+    Example: Make a module look like a list!?!
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#xmod--test-at-the-command-line" class="md-nav__link">
-    Test at the command line
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#xmod--in-your_modulepy" class="md-nav__link">
-    In your_module.py
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#xmod--test-at-the-command-line" class="md-nav__link">
-    Test at the command line
-  </a>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -279,40 +264,25 @@
     xmod
   </a>
   
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#xmod---xmod-extend-a-module-with-any-python-object-" class="md-nav__link">
-    &#127793; - xmod: Extend a module with any Python object - &#127793;
+    <nav class="md-nav" aria-label="xmod">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#xmod--example-make-a-module-callable-like-a-function" class="md-nav__link">
+    Example: Make a module callable like a function!
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#xmod--in-your_modulepy" class="md-nav__link">
-    In your_module.py
+        
+          <li class="md-nav__item">
+  <a href="#xmod--example-make-a-module-look-like-a-list" class="md-nav__link">
+    Example: Make a module look like a list!?!
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#xmod--test-at-the-command-line" class="md-nav__link">
-    Test at the command line
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#xmod--in-your_modulepy" class="md-nav__link">
-    In your_module.py
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#xmod--test-at-the-command-line" class="md-nav__link">
-    Test at the command line
-  </a>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -352,50 +322,41 @@
 <a id="xmod"></a>
   <div class="doc doc-contents first">
   
-      <h2 id="xmod---xmod-extend-a-module-with-any-python-object-">&#127793; - xmod: Extend a module with any Python object - &#127793;</h2>
+      <p>Callable modules!  Indexable modules!?</p>
 <p>Ever wanted to call a module directly, or index it?  Or just sick of seeing
 <code>from foo import foo</code> in your examples?</p>
 <p>Give your module the awesome power of an object, or maybe just save a
 little typing, with <code>xmod</code>.</p>
-<p><code>xmod</code> is a tiny library that extends a module to do things that normally
+<p><code>xmod</code> is a tiny library that lets a module to do things that normally
 only a class could do - handy for modules that "just do one thing".</p>
+<h3 id="xmod--example-make-a-module-callable-like-a-function">Example: Make a module callable like a function!</h3>
+<pre><code># In your_module.py
+import xmod
 
-<details class="example">
-  <summary>Make a module callable as a function</summary>
-  <h2 id="xmod--in-your_modulepy">In your_module.py</h2>
-<p>import xmod</p>
-<p>@xmod
+@xmod
 def a_function():
-    return 'HERE!!'</p>
-<h2 id="xmod--test-at-the-command-line">Test at the command line</h2>
-<blockquote>
-<blockquote>
-<blockquote>
-<p>import your_module
-your_module()
-HERE!!</p>
-</blockquote>
-</blockquote>
-</blockquote>
-</details>
-<details class="example">
-  <summary>Make a module look like an object</summary>
-  <h2 id="xmod--in-your_modulepy">In your_module.py</h2>
-<p>import xmod</p>
-<p>xmod(list(), <strong>name</strong>)</p>
-<h2 id="xmod--test-at-the-command-line">Test at the command line</h2>
-<blockquote>
-<blockquote>
-<blockquote>
-<p>import your_module
-assert your_module == []
-your_module.extend(range(3))
-print(your_module)
-[0, 1, 2]</p>
-</blockquote>
-</blockquote>
-</blockquote>
-</details>
+    return 'HERE!!'
+
+
+# Test at the command line
+&gt;&gt;&gt; import your_module
+&gt;&gt;&gt; your_module()
+HERE!!
+</code></pre>
+<h3 id="xmod--example-make-a-module-look-like-a-list">Example: Make a module look like a list!?!</h3>
+<pre><code># In your_module.py
+import xmod
+
+xmod(list(), __name__)
+
+# Test at the command line
+&gt;&gt;&gt; import your_module
+&gt;&gt;&gt; assert your_module == []
+&gt;&gt;&gt; your_module.extend(range(3))
+&gt;&gt;&gt; print(your_module)
+[0, 1, 2]
+</code></pre>
+
   
 
   <hr>
@@ -416,7 +377,7 @@ print(your_module)
 
 
 <h2 id="xmod.xmod" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">xmod</span><span class="p">(</span><span class="n">extension</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">full</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">props</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">omit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mutable</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">xmod</span><span class="p">(</span><span class="n">extension</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">full</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">omit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mutable</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
 
 </h2>
 
@@ -430,40 +391,115 @@ attributes from the extension.</p>
 <p>In the most common use case, the extension is a callable and only the
 <code>__call__</code> method is delegated, so <code>xmod</code> can also be used as a
 decorator, both with and without parameters.</p>
-<p>ARGUMENTS
-  extension
-    The object whose methods and properties extend the namespace.
-    This includes magic methods like <strong>call</strong> and <strong>getitem</strong>.</p>
-<p>name
-    The name of this symbol in <code>sys.modules</code>.  If this is <code>None</code>
-    then <code>xmod</code> will use <code>extension.__module__</code>.</p>
-<pre><code>This only needs to be be set if `extension` is _not_ a function or
-class defined in the module that's being extended.
 
-If the `name` argument is given, it should almost certainly be
-`__name__`.
-</code></pre>
-<p>full
-    If <code>False</code>, just add extension as a callable.</p>
-<pre><code>If `True`, extend the module with all members of `extension`.
+  <p><strong>Parameters:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Default</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code>extension</code></td>
+          <td>
+                <code><span title="typing.Optional">Optional</span></code>
+          </td>
+          <td><p>The object whose methods and properties extend the namespace.
+This includes magic methods like <strong>call</strong> and <strong>getitem</strong>.</p></td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>name</code></td>
+          <td>
+                <code><span title="typing.Optional">Optional</span>[str]</code>
+          </td>
+          <td>
+<p>The name of this symbol in <code>sys.modules</code>.  If this is <code>None</code>
+then <code>xmod</code> will use <code>extension.__module__</code>.</p>
+<p>This only needs to be be set if <code>extension</code> is <em>not</em> a function or
+class defined in the module that's being extended.</p>
+<p>If the <code>name</code> argument is given, it should almost certainly be
+<code>__name__</code>.</p>
+</td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>full</code></td>
+          <td>
+                <code><span title="typing.Optional">Optional</span>[bool]</code>
+          </td>
+          <td>
+<p>If <code>False</code>, just add extension as a callable.</p>
+<p>If <code>True</code>, extend the module with all members of <code>extension</code>.</p>
+<p>If <code>None</code>, the default, add the extension if it's a callable, otherwise
+extend the module with all members of <code>extension</code>.</p>
+</td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>mutable</code></td>
+          <td>
+                <code>bool</code>
+          </td>
+          <td><p>If <code>True</code>, the attributes on the proxy are mutable and write
+through to the underlying module.  If <code>False</code>, the default, attributes
+on the proxy cannot be changed.</p></td>
+          <td>
+                <code>False</code>
+          </td>
+        </tr>
+        <tr>
+          <td><code>omit</code></td>
+          <td>
+                <code><span title="typing.Optional">Optional</span>[<span title="typing.Sequence">Sequence</span>[str]]</code>
+          </td>
+          <td>
+<p>A list of methods <em>not</em> to delegate from the proxy to the extension.</p>
+<p>If <code>omit</code> is None, it defaults to <code>xmod.OMIT</code>, which seems to
+work well.</p>
+</td>
+          <td>
+                <code>None</code>
+          </td>
+        </tr>
+    </tbody>
+  </table>
 
-If `None`, the default, add the extension if it's a callable, otherwise
-extend the module with all members of `extension`.
-</code></pre>
-<p>mutable:
-    If <code>True</code>, the attributes on the proxy are mutable and write through to
-    the underlying module.  If <code>False</code>, the default, attributes on the
-    proxy cannot be changed.</p>
-<p>omit
-    A list of methods <em>not</em> to delegate from the proxy to the extension.</p>
-<pre><code>If `omit` is None, it defaults to `xmod.OMIT`, which seems to
-work well.
-</code></pre>
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td>
+                <code><span title="typing.Any">Any</span></code>
+          </td>
+          <td><p><code>extension</code>, the original item that got decorated</p></td>
+        </tr>
+    </tbody>
+  </table>
 
       <details class="quote">
         <summary>Source code in <code>xmod/xmod.py</code></summary>
         <div class="highlight"><table class="highlighttable"><tr>
-<td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 68</span>
+<td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 65</span>
+<span class="normal"> 66</span>
+<span class="normal"> 67</span>
+<span class="normal"> 68</span>
 <span class="normal"> 69</span>
 <span class="normal"> 70</span>
 <span class="normal"> 71</span>
@@ -601,11 +637,14 @@ work well.
 <span class="normal">203</span>
 <span class="normal">204</span>
 <span class="normal">205</span>
-<span class="normal">206</span>
-<span class="normal">207</span></pre></div></td>
+<span class="normal">206</span></pre></div></td>
 <td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">xmod</span><span class="p">(</span>
-    <span class="n">extension</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">full</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">props</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">omit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mutable</span><span class="o">=</span><span class="kc">False</span>
-<span class="p">):</span>
+    <span class="n">extension</span><span class="p">:</span> <span class="n">Optional</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">full</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">omit</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">mutable</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Extend the system module at `name` with any Python object.</span>
 
@@ -617,13 +656,11 @@ work well.
 <span class="sd">    `__call__` method is delegated, so `xmod` can also be used as a</span>
 <span class="sd">    decorator, both with and without parameters.</span>
 
-<span class="sd">    ARGUMENTS</span>
-<span class="sd">      extension</span>
-<span class="sd">        The object whose methods and properties extend the namespace.</span>
+<span class="sd">    Args:</span>
+<span class="sd">      extension: The object whose methods and properties extend the namespace.</span>
 <span class="sd">        This includes magic methods like __call__ and __getitem__.</span>
 
-<span class="sd">      name</span>
-<span class="sd">        The name of this symbol in `sys.modules`.  If this is `None`</span>
+<span class="sd">      name: The name of this symbol in `sys.modules`.  If this is `None`</span>
 <span class="sd">        then `xmod` will use `extension.__module__`.</span>
 
 <span class="sd">        This only needs to be be set if `extension` is _not_ a function or</span>
@@ -632,29 +669,29 @@ work well.
 <span class="sd">        If the `name` argument is given, it should almost certainly be</span>
 <span class="sd">        `__name__`.</span>
 
-<span class="sd">      full</span>
-<span class="sd">        If `False`, just add extension as a callable.</span>
+<span class="sd">      full: If `False`, just add extension as a callable.</span>
 
 <span class="sd">        If `True`, extend the module with all members of `extension`.</span>
 
 <span class="sd">        If `None`, the default, add the extension if it's a callable, otherwise</span>
 <span class="sd">        extend the module with all members of `extension`.</span>
 
-<span class="sd">      mutable:</span>
-<span class="sd">        If `True`, the attributes on the proxy are mutable and write through to</span>
-<span class="sd">        the underlying module.  If `False`, the default, attributes on the</span>
-<span class="sd">        proxy cannot be changed.</span>
+<span class="sd">      mutable: If `True`, the attributes on the proxy are mutable and write</span>
+<span class="sd">        through to the underlying module.  If `False`, the default, attributes</span>
+<span class="sd">        on the proxy cannot be changed.</span>
 
-<span class="sd">      omit</span>
-<span class="sd">        A list of methods _not_ to delegate from the proxy to the extension.</span>
+<span class="sd">      omit: A list of methods _not_ to delegate from the proxy to the extension.</span>
 
 <span class="sd">        If `omit` is None, it defaults to `xmod.OMIT`, which seems to</span>
 <span class="sd">        work well.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        `extension`, the original item that got decorated</span>
 <span class="sd">    """</span>
     <span class="k">if</span> <span class="n">extension</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="c1"># It's a decorator with properties</span>
         <span class="k">return</span> <span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span>
-            <span class="n">xmod</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">full</span><span class="o">=</span><span class="n">full</span><span class="p">,</span> <span class="n">props</span><span class="o">=</span><span class="n">props</span><span class="p">,</span> <span class="n">omit</span><span class="o">=</span><span class="n">omit</span><span class="p">,</span> <span class="n">mutable</span><span class="o">=</span><span class="n">mutable</span>
+            <span class="n">xmod</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">full</span><span class="o">=</span><span class="n">full</span><span class="p">,</span> <span class="n">omit</span><span class="o">=</span><span class="n">omit</span><span class="p">,</span> <span class="n">mutable</span><span class="o">=</span><span class="n">mutable</span>
         <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">method</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
