@@ -8,7 +8,7 @@ auto = true
 
 [tool.poetry]
 name = "xmod"
-version = "1.3.2"
+version = "1.4.0"
 description = "🌱 Turn any object into a module 🌱"
 authors = ["Tom Ritchford <tom@swirly.com>"]
 license = "MIT"
