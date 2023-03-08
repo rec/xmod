@@ -5,7 +5,7 @@ theme:
 
   palette:
     primary:
-      'indigo'
+      'lightBlue'
 
   font:
     text:
