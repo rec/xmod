@@ -1,3 +1,5 @@
+# 🌱 Turn any object into a module 🌱
+
 Callable modules!  Indexable modules!?
 
 Ever wanted to call a module directly, or index it?  Or just sick of seeing

@@ -110,7 +110,7 @@ class TestXmod(unittest.TestCase):
         except ValueError as e:
             assert e.args == ('`name` parameter must be set',)
         else:
-            assert False
+            assert partial_function and False
 
 
 COMMON = [

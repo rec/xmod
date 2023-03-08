@@ -1,5 +1,5 @@
 """
-🌱 Turn any object into a module 🌱
+# 🌱 Turn any object into a module 🌱
 
 Callable modules!  Indexable modules!?
 
@@ -104,7 +104,7 @@ def xmod(
         through to the underlying module.  If `False`, the default, attributes
         on the proxy cannot be changed.
 
-      omit: A list of methods _not_ to delegate from the proxy to the extension.
+      omit: A list of methods _not_ to delegate from the proxy to the extension
 
         If `omit` is None, it defaults to `xmod.OMIT`, which seems to
         work well.
