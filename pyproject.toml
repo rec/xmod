@@ -16,13 +16,11 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = ">=3.8"
-dek = "*"
 
 [tool.poetry.group.dev.dependencies]
 coverage = "*"
 flake8 = "*"
 pytest = "*"
-
 
 [tool.coverage]
 [tool.coverage.run]
