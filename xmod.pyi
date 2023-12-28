@@ -55,3 +55,4 @@ def xmod(extension: t.Any = ..., name: t.Optional[str] = ..., full: t.Optional[b
         `extension`, the original item that got decorated
     """
     ...
+

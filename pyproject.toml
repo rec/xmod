@@ -13,12 +13,11 @@ description = "🌱 Turn any object into a module 🌱"
 authors = ["Tom Ritchford <tom@swirly.com>"]
 license = "MIT"
 readme = "README.md"
+include = ["xmod.pyi"]
 
 [tool.poetry.dependencies]
 python = ">=3.8"
 
-[tool.setuptools.package-data]
-"*" = ["*.pyi"]
 
 [tool.poetry.group.dev.dependencies]
 black = "*"
