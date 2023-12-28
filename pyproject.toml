@@ -16,19 +16,19 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = ">=3.8"
-black = "^23.12.1"
-isort = "^5.13.2"
-mypy = "^1.8.0"
-pyright = "^1.1.343"
-ruff = "^0.1.9"
 
 [tool.setuptools.package-data]
 "*" = ["*.pyi"]
 
 [tool.poetry.group.dev.dependencies]
+black = "*"
 coverage = "*"
 flake8 = "*"
+isort = "*"
+mypy = "*"
+pyright = "*"
 pytest = "*"
+ruff = "*"
 
 [tool.coverage.run]
 branch = true
