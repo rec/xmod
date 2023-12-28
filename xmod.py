@@ -43,12 +43,11 @@ only a class could do - handy for modules that "just do one thing".
 """
 __all__ = ('xmod',)
 
-from typing import Any, Optional, Sequence
 import functools
 import sys
+import typing as t
 
-
-OMIT = {
+_OMIT = {
     '__class__',
     '__getattr__',
     '__getattribute__',
@@ -58,17 +57,17 @@ OMIT = {
     '__setattr__',
 }
 
-EXTENSION_ATTRIBUTE = '_xmod_extension'
-WRAPPED_ATTRIBUTE = '_xmod_wrapped'
+_EXTENSION_ATTRIBUTE = '_xmod_extension'
+_WRAPPED_ATTRIBUTE = '_xmod_wrapped'
 
 
 def xmod(
-    extension: Optional = None,
-    name: Optional[str] = None,
-    full: Optional[bool] = None,
-    omit: Optional[Sequence[str]] = None,
-    mutable: bool = False
-) -> Any:
+    extension: t.Any = None,
+    name: t.Optional[str] = None,
+    full: t.Optional[bool] = None,
+    omit: t.Optional[t.Sequence[str]] = None,
+    mutable: bool = False,
+) -> t.Any:
     """
     Extend the system module at `name` with any Python object.
 
@@ -106,7 +105,7 @@ def xmod(
 
       omit: A list of methods _not_ to delegate from the proxy to the extension
 
-        If `omit` is None, it defaults to `xmod.OMIT`, which seems to
+        If `omit` is None, it defaults to `xmod._OMIT`, which seems to
         work well.
 
     Returns:
@@ -118,44 +117,45 @@ def xmod(
             xmod, name=name, full=full, omit=omit, mutable=mutable
         )
 
-    def method(f):
+    def method(f) -> t.Callable:
         @functools.wraps(f)
         def wrapped(self, *args, **kwargs):
             return f(*args, **kwargs)
 
         return wrapped
 
-    def mutator(f):
+    def mutator(f) -> t.Callable:
         def fail(*args, **kwargs):
             raise TypeError(f'Class is immutable {args} {kwargs}')
 
         return method(f) if mutable else fail
 
-    def prop(k):
+    def prop(k) -> property:
         return property(
             method(lambda: getattr(extension, k)),
             mutator(lambda v: setattr(extension, k, v)),
             mutator(lambda: delattr(extension, k)),
         )
+
     name = name or getattr(extension, '__module__', None)
     if not name:
         raise ValueError('`name` parameter must be set')
 
     module = sys.modules[name]
 
-    def _getattr(k):
+    def _getattr(k) -> t.Any:
         try:
             return getattr(extension, k)
         except AttributeError:
             return getattr(module, k)
 
-    def _setattr(k, v):
+    def _setattr(k, v) -> None:
         if hasattr(extension, k):
             setattr(extension, k, v)
         else:
             setattr(module, k, v)
 
-    def _delattr(k):
+    def _delattr(k) -> None:
         success = True
         try:
             delattr(extension, k)
@@ -168,7 +168,7 @@ def xmod(
                 raise
 
     members = {
-        WRAPPED_ATTRIBUTE: module,
+        _WRAPPED_ATTRIBUTE: module,
         '__getattr__': method(_getattr),
         '__setattr__': mutator(_setattr),
         '__delattr__': mutator(_delattr),
@@ -177,18 +177,18 @@ def xmod(
 
     if callable(extension):
         members['__call__'] = method(extension)
-        members[EXTENSION_ATTRIBUTE] = staticmethod(extension)
+        members[_EXTENSION_ATTRIBUTE] = staticmethod(extension)
 
     elif full is False:
         raise ValueError('extension must be callable if full is False')
 
     else:
-        members[EXTENSION_ATTRIBUTE] = extension
+        members[_EXTENSION_ATTRIBUTE] = extension
         full = True
 
-    omit = OMIT if omit is None else set(omit)
+    om = _OMIT if omit is None else set(omit)
     for a in dir(extension) if full else ():
-        if a not in omit:
+        if a not in om:
             value = getattr(extension, a)
             is_magic = a.startswith('__') and callable(value)
             if is_magic:
@@ -196,7 +196,7 @@ def xmod(
             elif False:  # TODO: enable or delete this
                 members[a] = prop(a)
 
-    def directory(self):
+    def directory(self) -> t.List:
         return sorted(set(members).union(dir(module)))
 
     members['__dir__'] = directory

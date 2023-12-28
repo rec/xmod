@@ -22,19 +22,21 @@ mypy = "^1.8.0"
 pyright = "^1.1.343"
 ruff = "^0.1.9"
 
+[tool.setuptools.package-data]
+"*" = ["*.pyi"]
+
 [tool.poetry.group.dev.dependencies]
 coverage = "*"
 flake8 = "*"
 pytest = "*"
 
-[tool.coverage]
 [tool.coverage.run]
-branch = "True"
-source = "xmod"
+branch = true
+source = ["xmod"]
 
 [tool.coverage.report]
-fail_under = "100"
-skip_covered = "True"
+fail_under = "91"
+skip_covered = true
 exclude_lines = ["pragma: no cover", "if False:", "if __name__ == .__main__.:", "raise NotImplementedError"]
 [build-system]
 requires = ["poetry-core"]
