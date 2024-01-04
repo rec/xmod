@@ -14,6 +14,9 @@ authors = ["Tom Ritchford <tom@swirly.com>"]
 license = "MIT"
 readme = "README.md"
 include = ["xmod.pyi"]
+repository = "https://github.com/rec/xmod"
+homepage = "https://github.com/rec/xmod"
+documentation = "https://rec.github.io/xmod"
 
 [tool.poetry.dependencies]
 python = ">=3.8"
