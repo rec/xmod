@@ -18,14 +18,12 @@ include = ["xmod.pyi"]
 [tool.poetry.dependencies]
 python = ">=3.8"
 
-
 [tool.poetry.group.dev.dependencies]
 black = "*"
 coverage = "*"
 flake8 = "*"
 isort = "*"
 mypy = "*"
-pyright = "*"
 pytest = "*"
 ruff = "*"
 
