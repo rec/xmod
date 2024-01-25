@@ -60,6 +60,8 @@ _OMIT = {
 _EXTENSION_ATTRIBUTE = '_xmod_extension'
 _WRAPPED_ATTRIBUTE = '_xmod_wrapped'
 
+Callable = t.Callable[..., t.Any]
+
 
 def xmod(
     extension: t.Any = None,
@@ -113,24 +115,23 @@ def xmod(
     """
     if extension is None:
         # It's a decorator with properties
-        return functools.partial(
-            xmod, name=name, full=full, omit=omit, mutable=mutable
-        )
+        return functools.partial(xmod, name=name, full=full, omit=omit, mutable=mutable)
 
-    def method(f) -> t.Callable:
+    def method(f: Callable) -> Callable:
         @functools.wraps(f)
-        def wrapped(self, *args, **kwargs):
+        def wrapped(self: t.Any, *args: t.Any, **kwargs: t.Any) -> t.Any:
             return f(*args, **kwargs)
 
         return wrapped
 
-    def mutator(f) -> t.Callable:
-        def fail(*args, **kwargs):
+    def mutator(f: Callable) -> Callable:
+        @functools.wraps(f)
+        def fail(*args: t.Any, **kwargs: t.Any) -> t.Any:
             raise TypeError(f'Class is immutable {args} {kwargs}')
 
         return method(f) if mutable else fail
 
-    def prop(k) -> property:
+    def prop(k: str) -> property:
         return property(
             method(lambda: getattr(extension, k)),
             mutator(lambda v: setattr(extension, k, v)),
@@ -143,19 +144,19 @@ def xmod(
 
     module = sys.modules[name]
 
-    def _getattr(k) -> t.Any:
+    def _getattr(k: str) -> t.Any:
         try:
             return getattr(extension, k)
         except AttributeError:
             return getattr(module, k)
 
-    def _setattr(k, v) -> None:
+    def _setattr(k: str, v: t.Any) -> None:
         if hasattr(extension, k):
             setattr(extension, k, v)
         else:
             setattr(module, k, v)
 
-    def _delattr(k) -> None:
+    def _delattr(k: str) -> None:
         success = True
         try:
             delattr(extension, k)
@@ -196,7 +197,7 @@ def xmod(
             elif False:  # TODO: enable or delete this
                 members[a] = prop(a)
 
-    def directory(self) -> t.List:
+    def directory(self: t.Any) -> t.List[str]:
         return sorted(set(members).union(dir(module)))
 
     members['__dir__'] = directory

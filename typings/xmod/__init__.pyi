@@ -49,11 +49,18 @@ only a class could do - handy for modules that "just do one thing".
     >>> print(your_module)
     [0, 1, 2]
 """
-__all__ = ('xmod', )
+__all__ = ('xmod',)
 _OMIT = ...
 _EXTENSION_ATTRIBUTE = ...
 _WRAPPED_ATTRIBUTE = ...
-def xmod(extension: t.Any = ..., name: t.Optional[str] = ..., full: t.Optional[bool] = ..., omit: t.Optional[t.Sequence[str]] = ..., mutable: bool = ...) -> t.Any:
+
+def xmod(
+    extension: t.Any = ...,
+    name: t.Optional[str] = ...,
+    full: t.Optional[bool] = ...,
+    omit: t.Optional[t.Sequence[str]] = ...,
+    mutable: bool = ...,
+) -> t.Any:
     """
     Extend the system module at `name` with any Python object.
 
@@ -98,4 +105,3 @@ def xmod(extension: t.Any = ..., name: t.Optional[str] = ..., full: t.Optional[b
         `extension`, the original item that got decorated
     """
     ...
-
