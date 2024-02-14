@@ -1,3 +1,4 @@
+import platform
 import unittest
 
 
@@ -105,12 +106,15 @@ class TestXmod(unittest.TestCase):
         assert decorator_with_parameter.BAR == 99
 
     def test_partial_function(self):
+        minor = int(platform.python_version_tuple()[1])
         try:
             from .modules import partial_function
         except ValueError as e:
+            assert minor < 10
             assert e.args == ('`name` parameter must be set',)
         else:
-            assert partial_function and False
+            assert minor >= 10
+            assert partial_function
 
 
 COMMON = [
