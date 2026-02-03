@@ -1,6 +1,6 @@
 [project]
 name = "xmod"
-version = "1.8.1"
+version = "1.9.0"
 description = "🌱 Turn any object into a module 🌱"
 authors = [{ name = "Tom Ritchford", email = "tom@swirly.com" }]
 requires-python = ">=3.10"
