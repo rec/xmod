@@ -173,7 +173,7 @@ def xmod(
         '__getattr__': method(_getattr),
         '__setattr__': mutator(_setattr),
         '__delattr__': mutator(_delattr),
-        '__doc__': getattr(module, '__doc__'),
+        '__doc__': module.__doc__,
     }
 
     if callable(extension):
